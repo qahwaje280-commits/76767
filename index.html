@@ -1,0 +1,2359 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام الاختبارات الإلكتروني - المرحلة الثانوية</title>
+    <style>
+        :root {
+            --primary-dark: #1a1a2e;
+            --secondary-dark: #16213e;
+            --accent-dark: #0f3460;
+            --gray-bg: #2d3047;
+            --gray-light: #4a4e69;
+            --gray-lighter: #6d6f8a;
+            --yellow-primary: #FFD700;
+            --yellow-secondary: #FFC107;
+            --red-primary: #ff6b6b;
+            --red-secondary: #ff5252;
+            --white: #ffffff;
+            --off-white: #f8f9fa;
+            --gradient-dark: linear-gradient(to right, var(--primary-dark), var(--secondary-dark));
+            --gradient-yellow: linear-gradient(to right, var(--yellow-primary), var(--yellow-secondary));
+            --gradient-red: linear-gradient(to right, var(--red-primary), var(--red-secondary));
+            --gradient-gray: linear-gradient(to right, var(--gray-light), var(--gray-lighter));
+            --gradient-accent: linear-gradient(to right, var(--accent-dark), #1e3a8a);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--primary-dark);
+            color: var(--off-white);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: var(--gradient-dark);
+            color: var(--white);
+            padding: 25px 0;
+            text-align: center;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-yellow);
+            animation: slideHeader 3s infinite;
+        }
+        
+        @keyframes slideHeader {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: var(--gradient-yellow);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .welcome-message {
+            background: linear-gradient(135deg, var(--accent-dark), var(--secondary-dark));
+            color: var(--yellow-primary);
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid var(--yellow-primary);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .welcome-message::before {
+            content: '🎉';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 4rem;
+            opacity: 0.1;
+            transform: rotate(15deg);
+        }
+        
+        .welcome-message::after {
+            content: '🎓';
+            position: absolute;
+            bottom: -20px;
+            left: -20px;
+            font-size: 4rem;
+            opacity: 0.1;
+            transform: rotate(-15deg);
+        }
+        
+        .welcome-title {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .welcome-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--white);
+        }
+        
+        .falling-papers {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .paper {
+            position: absolute;
+            top: -50px;
+            font-size: 2rem;
+            animation: fall linear infinite;
+        }
+        
+        .paper.yellow { color: var(--yellow-primary); }
+        .paper.white { color: var(--white); }
+        .paper.red { color: var(--red-primary); }
+        
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+        
+        .main-menu {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+        
+        .grade-card {
+            background: var(--gradient-gray);
+            border-radius: 15px;
+            padding: 30px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
+        }
+        
+        .grade-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient-yellow);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .grade-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .grade-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.4);
+            border-color: var(--yellow-primary);
+        }
+        
+        .grade-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+        }
+        
+        .first-grade .grade-icon {
+            color: var(--yellow-primary);
+        }
+        
+        .second-grade .grade-icon {
+            color: var(--red-primary);
+        }
+        
+        .grade-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--white);
+        }
+        
+        .grade-card p {
+            color: var(--gray-lighter);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--gradient-yellow);
+            color: var(--primary-dark);
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(255, 215, 0, 0.4);
+            background: linear-gradient(to right, #ffea00, #ffc107);
+        }
+        
+        .subjects-container, .units-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            margin: 40px 0;
+        }
+        
+        .subject-circle, .unit-circle {
+            width: 170px;
+            height: 170px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            text-align: center;
+            padding: 15px;
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
+        }
+        
+        .subject-circle::before, .unit-circle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+            z-index: -1;
+        }
+        
+        .subject-circle:hover, .unit-circle:hover {
+            transform: scale(1.08) rotate(5deg);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.4);
+        }
+        
+        .subject-icon, .unit-icon {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+        
+        .subject-title, .unit-title {
+            font-size: 1.1rem;
+            line-height: 1.3;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .question-bank-circle {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            text-align: center;
+            padding: 15px;
+            position: relative;
+            overflow: hidden;
+            margin: 10px;
+            text-decoration: none;
+            z-index: 2;
+        }
+        
+        .question-bank-circle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.4);
+        }
+        
+        .bank-icon {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+        }
+        
+        .bank-title {
+            font-size: 1rem;
+            line-height: 1.2;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .question-bank-circles-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .subject-history { background: linear-gradient(135deg, #8D6E63, #5D4037); }
+        .subject-arabic { background: linear-gradient(135deg, #FF9800, #F57C00); }
+        .subject-english { background: linear-gradient(135deg, #F44336, #C62828); }
+        .subject-islamic { background: linear-gradient(135deg, #4CAF50, #2E7D32); }
+        .subject-math { background: linear-gradient(135deg, #7E57C2, #5E35B1); }
+        .subject-physics { background: linear-gradient(135deg, #FF9800, #FF5722); }
+        .subject-chemistry { background: linear-gradient(135deg, #00BCD4, #0097A7); }
+        .subject-biology { background: linear-gradient(135deg, #4CAF50, #388E3C); }
+        .subject-geology { background: linear-gradient(135deg, #795548, #5D4037); }
+        .subject-business { background: linear-gradient(135deg, #2196F3, #1565C0); }
+        .subject-geography { background: linear-gradient(135deg, #00BCD4, #00838F); }
+        .subject-psychology { background: linear-gradient(135deg, #9C27B0, #7B1FA2); }
+        .subject-literature { background: linear-gradient(135deg, #FF9800, #EF6C00); }
+        .subject-grammar { background: linear-gradient(135deg, #FFC107, #FF8F00); }
+        .subject-finance { background: linear-gradient(135deg, #4CAF50, #2E7D32); }
+        .subject-philosophy { background: linear-gradient(135deg, #3F51B5, #283593); }
+        
+        .unit-history { background: linear-gradient(135deg, #8D6E63, #5D4037); }
+        .unit-literature { background: linear-gradient(135deg, #FF9800, #F57C00); }
+        .unit-english { background: linear-gradient(135deg, #F44336, #C62828); }
+        .unit-islamic { background: linear-gradient(135deg, #4CAF50, #2E7D32); }
+        .unit-math { background: linear-gradient(135deg, #7E57C2, #5E35B1); }
+        .unit-physics { background: linear-gradient(135deg, #FF9800, #FF5722); }
+        .unit-chemistry { background: linear-gradient(135deg, #00BCD4, #0097A7); }
+        .unit-biology { background: linear-gradient(135deg, #4CAF50, #388E3C); }
+        .unit-geology { background: linear-gradient(135deg, #795548, #5D4037); }
+        .unit-business { background: linear-gradient(135deg, #2196F3, #1565C0); }
+        .unit-geography { background: linear-gradient(135deg, #00BCD4, #00838F); }
+        .unit-psychology { background: linear-gradient(135deg, #9C27B0, #7B1FA2); }
+        .unit-grammar { background: linear-gradient(135deg, #FFC107, #FF8F00); }
+        .unit-finance { background: linear-gradient(135deg, #4CAF50, #2E7D32); }
+        .unit-philosophy { background: linear-gradient(135deg, #3F51B5, #283593); }
+        
+        .bank-history { background: linear-gradient(135deg, #8D6E63, #5D4037); }
+        .bank-islamic { background: linear-gradient(135deg, #4CAF50, #2E7D32); }
+        .bank-arabic { background: linear-gradient(135deg, #FF9800, #F57C00); }
+        .bank-math { background: linear-gradient(135deg, #7E57C2, #5E35B1); }
+        .bank-science { background: linear-gradient(135deg, #EC407A, #D81B60); }
+        .bank-business { background: linear-gradient(135deg, #2196F3, #1565C0); }
+        .bank-english { background: linear-gradient(135deg, #F44336, #C62828); }
+        .bank-literature { background: linear-gradient(135deg, #8D6E63, #6D4C41); }
+        .bank-geography { background: linear-gradient(135deg, #00BCD4, #00838F); }
+        .bank-ministry { 
+            background: linear-gradient(135deg, #1565C0, #0D47A1);
+            border: 2px solid var(--yellow-primary);
+            animation: glow 2s infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { box-shadow: 0 0 10px var(--yellow-primary); }
+            to { box-shadow: 0 0 20px var(--yellow-primary), 0 0 30px rgba(255, 215, 0, 0.5); }
+        }
+        
+        .ministry-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--yellow-primary);
+            color: #1565C0;
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+            z-index: 3;
+        }
+        
+        .subscription-info {
+            background: var(--gradient-gray);
+            border: 2px solid var(--yellow-primary);
+            border-radius: 10px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .subscription-info h3 {
+            color: var(--yellow-primary);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .subscription-link {
+            display: inline-block;
+            background: var(--gradient-yellow);
+            color: var(--primary-dark);
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin: 10px 0;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3);
+        }
+        
+        .subscription-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(255, 215, 0, 0.4);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 25px;
+            margin-top: 50px;
+            color: var(--gray-lighter);
+            border-top: 1px solid var(--gray-light);
+            background: var(--secondary-dark);
+        }
+        
+        .back-btn {
+            background: var(--gradient-gray);
+            color: var(--white);
+            margin-right: 10px;
+        }
+        
+        .back-btn:hover {
+            background: var(--gradient-accent);
+        }
+        
+        .admin-access {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+        
+        .admin-access-btn {
+            background: var(--gradient-gray);
+            color: var(--white);
+            border: 2px solid var(--yellow-primary);
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .admin-access-btn:hover {
+            background: var(--gradient-accent);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+        }
+        
+        .admin-login-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+        }
+        
+        .admin-login-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--secondary-dark);
+            width: 90%;
+            max-width: 400px;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            border: 2px solid var(--yellow-primary);
+        }
+        
+        .admin-login-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--yellow-primary);
+        }
+        
+        .admin-login-input {
+            width: 100%;
+            padding: 15px;
+            margin: 15px 0;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            font-size: 1.1rem;
+            text-align: center;
+            background: var(--primary-dark);
+            color: var(--white);
+        }
+        
+        .admin-login-error {
+            color: var(--red-primary);
+            margin: 10px 0;
+            display: none;
+        }
+        
+        .admin-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+        }
+        
+        .admin-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--secondary-dark);
+            width: 90%;
+            max-width: 1000px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid var(--yellow-primary);
+        }
+        
+        .admin-header {
+            background: var(--gradient-dark);
+            color: var(--white);
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            margin: -20px -20px 20px -20px;
+            text-align: center;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: var(--primary-dark);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            text-align: center;
+            border: 1px solid var(--gray-light);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--yellow-primary);
+        }
+        
+        .students-list {
+            margin: 20px 0;
+        }
+        
+        .student-item {
+            background: var(--primary-dark);
+            border: 1px solid var(--gray-light);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .student-info {
+            flex: 1;
+        }
+        
+        .student-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .add-student-form {
+            background: var(--primary-dark);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid var(--gray-light);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--gray-lighter);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--gray-light);
+            border-radius: 5px;
+            font-size: 1rem;
+            background: var(--secondary-dark);
+            color: var(--white);
+        }
+        
+        .close-admin {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--yellow-primary);
+        }
+        
+        .codes-section {
+            background: var(--primary-dark);
+            border: 2px solid var(--gray-light);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .codes-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 15px 0;
+            background: var(--secondary-dark);
+            border-radius: 8px;
+            padding: 15px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+        }
+        
+        .code-item {
+            background: var(--primary-dark);
+            border: 1px solid var(--gray-light);
+            border-radius: 5px;
+            padding: 8px;
+            text-align: center;
+            font-family: monospace;
+            font-weight: bold;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--white);
+        }
+        
+        .code-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        .code-item.used {
+            background: #ffebee;
+            color: #c62828;
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+        
+        .code-item.available {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-color: var(--green);
+        }
+        
+        .code-item.disabled {
+            background: #f5f5f5;
+            color: #9e9e9e;
+            border-color: #bdbdbd;
+            text-decoration: line-through;
+        }
+        
+        .direct-access {
+            background: var(--primary-dark);
+            border: 2px solid var(--yellow-primary);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .direct-access-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .codes-filter {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+            background: var(--gray-light);
+            color: var(--white);
+        }
+        
+        .filter-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .filter-all {
+            background: var(--accent-dark);
+        }
+        
+        .filter-available {
+            background: #4CAF50;
+        }
+        
+        .filter-used {
+            background: var(--red-primary);
+        }
+        
+        .filter-disabled {
+            background: var(--gray-lighter);
+        }
+        
+        .system-health-section {
+            background: var(--primary-dark);
+            border: 2px solid var(--yellow-primary);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .emergency-section {
+            background: var(--primary-dark);
+            border: 2px solid var(--red-primary);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .backup-section {
+            background: var(--primary-dark);
+            border: 2px solid var(--yellow-primary);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .backup-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        
+        .log-entry {
+            background: var(--primary-dark);
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 5px;
+            font-size: 0.9em;
+            border-right: 3px solid var(--yellow-primary);
+            color: var(--gray-lighter);
+        }
+        
+        .no-select {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        .no-copy {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        .activation-input-container {
+            background: var(--secondary-dark);
+            border-radius: 15px;
+            padding: 40px;
+            margin: 50px auto;
+            max-width: 500px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            border: 2px solid var(--yellow-primary);
+        }
+        
+        .activation-input-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: var(--yellow-primary);
+        }
+        
+        .activation-message {
+            background: var(--primary-dark);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+            color: var(--gray-lighter);
+        }
+        
+        @media (max-width: 768px) {
+            .main-menu {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .grade-card {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .subject-circle, .unit-circle {
+                width: 140px;
+                height: 140px;
+            }
+            
+            .subject-icon, .unit-icon {
+                font-size: 2.2rem;
+            }
+            
+            .subject-title, .unit-title {
+                font-size: 0.9rem;
+            }
+            
+            .question-bank-circle {
+                width: 140px;
+                height: 140px;
+            }
+            
+            .bank-icon {
+                font-size: 1.8rem;
+            }
+            
+            .bank-title {
+                font-size: 0.85rem;
+            }
+            
+            .welcome-title {
+                font-size: 1.8rem;
+            }
+            
+            .welcome-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .admin-access {
+                top: 10px;
+                left: 10px;
+            }
+            
+            .admin-access-btn {
+                padding: 10px 14px;
+                font-size: 0.9rem;
+            }
+            
+            .direct-access-buttons {
+                flex-direction: column;
+            }
+            
+            .codes-list {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+            
+            .codes-filter {
+                flex-direction: column;
+            }
+            
+            .student-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .student-actions {
+                margin-top: 10px;
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            .backup-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body class="no-select no-copy" oncontextmenu="return false;">
+    <!-- تأثيرات الأوراق المتساقطة -->
+    <div class="falling-papers" id="falling-papers"></div>
+
+    <!-- زر دخول المسؤول -->
+    <div class="admin-access">
+        <button class="admin-access-btn" onclick="showAdminLogin()">
+            🔧 لوحة التحكم
+        </button>
+    </div>
+
+    <!-- نافذة تسجيل دخول المسؤول -->
+    <div id="admin-login-modal" class="admin-login-modal">
+        <div class="admin-login-content">
+            <div class="admin-login-icon">🔐</div>
+            <h2>دخول المسؤول</h2>
+            <p>للدخول إلى لوحة التحكم، يرجى إدخال كلمة المرور</p>
+            
+            <div class="activation-form">
+                <input type="password" id="admin-password" class="admin-login-input" placeholder="أدخل كلمة مرور المسؤول">
+                <div id="admin-login-error" class="admin-login-error">كلمة المرور غير صحيحة</div>
+                <button class="btn" onclick="checkAdminPassword()" style="margin-top: 20px;">دخول</button>
+                <button class="btn back-btn" onclick="closeAdminLogin()" style="margin-top: 10px;">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- الصفحة الرئيسية -->
+    <div id="home-page">
+        <header>
+            <div class="container">
+                <h1>نظام الاختبارات الإلكتروني</h1>
+                <p>للمرحلة الثانوية - قسمي أول وثاني ثانوي</p>
+            </div>
+        </header>
+        
+        <div class="container">
+            <!-- رسالة الترحيب -->
+            <div class="welcome-message">
+                <h2 class="welcome-title">🎓 مرحباً بكم في النظام المجاني 🎓</h2>
+                <p class="welcome-subtitle">نقدم لكم نظام اختبارات متكامل مجاناً لجميع طلابنا الأعزاء</p>
+                <p>جميع بنوك الأسئلة متاحة الآن بدون أي قيود أو اشتراكات</p>
+            </div>
+            
+            <div class="main-menu">
+                <div class="grade-card first-grade">
+                    <div class="grade-icon">📚</div>
+                    <h2>أول ثانوي</h2>
+                    <p>اختبارات الصف الأول الثانوي في جميع المواد</p>
+                    <button class="btn" onclick="selectGrade('first')">الدخول إلى الاختبارات</button>
+                </div>
+                
+                <div class="grade-card second-grade">
+                    <div class="grade-icon">🎓</div>
+                    <h2>ثاني ثانوي</h2>
+                    <p>اختبارات الصف الثاني الثانوي في جميع المواد</p>
+                    <button class="btn" onclick="selectGrade('second')">الدخول إلى الاختبارات</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- صفحة اختيار المادة -->
+    <div id="subjects-page" class="hidden">
+        <header>
+            <div class="container">
+                <h1 id="subjects-title">اختيار المادة</h1>
+                <p id="subjects-subtitle">اختر المادة التي تريد أداء الاختبار فيها</p>
+            </div>
+        </header>
+        
+        <div class="container">
+            <div class="subjects-container" id="subjects-container"></div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn" onclick="goToHomePage()">العودة إلى الصفحة الرئيسية</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- صفحة الوحدات -->
+    <div id="units-page" class="hidden">
+        <header>
+            <div class="container">
+                <h1 id="units-title">وحدات المادة</h1>
+                <p id="units-subtitle">اختر الوحدة التي تريد دراستها</p>
+            </div>
+        </header>
+        
+        <div class="container">
+            <div class="units-container" id="units-list"></div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn back-btn" onclick="goToSubjectsPage()">العودة إلى المواد</button>
+                <button class="btn" onclick="goToHomePage()">العودة إلى الصفحة الرئيسية</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- صفحة بنك الأسئلة -->
+    <div id="question-bank-page" class="hidden">
+        <header>
+            <div class="container">
+                <h1 id="question-bank-title">بنك أسئلة</h1>
+                <p id="question-bank-subtitle">مادة التاريخ - الصف الأول الثانوي</p>
+            </div>
+        </header>
+        
+        <div class="container">
+            <div class="subscription-info">
+                <h3 id="question-bank-unit">بنك الأسئلة لوحدة الأردن في العصور القديمة</h3>
+                <p>اختر أحد الروابط التالية للوصول إلى بنك الأسئلة:</p>
+                
+                <div id="question-bank-links" class="question-bank-circles-container"></div>
+                
+                <p style="margin-top: 20px; color: var(--gray-lighter);">
+                    يمكنك استخدام هذه الروابط للوصول إلى بنوك الأسئلة والتدرب على الاختبارات المختلفة.
+                </p>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn back-btn" onclick="goToUnitsPage()">العودة إلى الوحدات</button>
+                <button class="btn" onclick="goToSubjectsPage()">العودة إلى المواد</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- لوحة تحكم المسؤول -->
+    <div id="admin-modal" class="admin-modal">
+        <div class="admin-content">
+            <div class="admin-header">
+                <button class="close-admin" onclick="closeAdminPanel()">×</button>
+                <h2>لوحة تحكم المسؤول - إدارة الطلاب والأكواد</h2>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <h3>إجمالي الطلاب</h3>
+                    <div class="stat-number" id="total-students">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>الطلاب النشطين</h3>
+                    <div class="stat-number" id="active-students">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>طلاب أول ثانوي</h3>
+                    <div class="stat-number" id="first-grade-students">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>طلاب ثاني ثانوي</h3>
+                    <div class="stat-number" id="second-grade-students">0</div>
+                </div>
+            </div>
+            
+            <div class="direct-access">
+                <h3>🚀 الوصول المباشر للصفوف</h3>
+                <p>استخدم هذه الأزرار للوصول المباشر إلى صفوف المرحلة الثانوية</p>
+                
+                <div class="direct-access-buttons">
+                    <button class="btn" onclick="directAccessToGrade('first')" style="background: var(--yellow-primary); color: var(--primary-dark);">
+                        📚 الدخول المباشر لأول ثانوي
+                    </button>
+                    <button class="btn" onclick="directAccessToGrade('second')" style="background: var(--red-primary);">
+                        🎓 الدخول المباشر لثاني ثانوي
+                    </button>
+                </div>
+            </div>
+            
+            <div class="system-health-section">
+                <h3>🔧 حالة النظام</h3>
+                <button class="btn" onclick="checkSystemHealth()" style="background: var(--yellow-primary); color: var(--primary-dark); margin-bottom: 15px;">
+                    🔍 فحص صحة النظام
+                </button>
+                <div id="system-status"></div>
+            </div>
+            
+            <div class="emergency-section">
+                <h3>📝 سجل الأحداث</h3>
+                <div id="notifications-list" style="max-height: 200px; overflow-y: auto; margin: 15px 0;"></div>
+                <button class="btn" onclick="clearSystemLogs()" style="background: var(--accent-dark);">
+                    🗑️ مسح السجلات
+                </button>
+            </div>
+            
+            <div class="codes-section">
+                <h3>🔑 إدارة الأكواد</h3>
+                <p>جميع الأكواد مضمنة في النظام - النظام يعمل مجاناً الآن</p>
+                
+                <div class="codes-filter">
+                    <button class="filter-btn filter-all" onclick="filterCodes('all')">عرض الكل</button>
+                    <button class="filter-btn filter-available" onclick="filterCodes('available')">المتاحة فقط</button>
+                    <button class="filter-btn filter-used" onclick="filterCodes('used')">المستخدمة فقط</button>
+                    <button class="filter-btn filter-disabled" onclick="filterCodes('disabled')">المعطلة فقط</button>
+                </div>
+                
+                <div class="codes-list" id="codes-list"></div>
+                
+                <div style="margin-top: 20px;">
+                    <button class="btn" onclick="copyAllCodes()" style="background: var(--accent-dark);">
+                        📋 نسخ جميع الأكواد
+                    </button>
+                    <button class="btn" onclick="exportCodesToFile()" style="background: #4CAF50;">
+                        💾 حفظ الأكواد كملف
+                    </button>
+                </div>
+            </div>
+            
+            <div class="backup-section">
+                <h3>🛡️ نظام النسخ الاحتياطي</h3>
+                <p>استخدم هذه الأدوات لحفظ بياناتك</p>
+                
+                <div class="backup-buttons">
+                    <button class="btn" onclick="exportBackup()" style="background: #4CAF50;">
+                        📥 تصدير النسخة الاحتياطية
+                    </button>
+                    <button class="btn" onclick="importBackup()" style="background: var(--accent-dark);">
+                        📤 استيراد النسخة الاحتياطية
+                    </button>
+                </div>
+            </div>
+
+            <div class="emergency-section">
+                <h3>🚨 أدوات الطوارئ</h3>
+                <p>استخدم هذه الأدوات في حالة فقدان البيانات</p>
+                
+                <div class="backup-buttons">
+                    <button class="btn" onclick="createEmergencyBackup()" style="background: var(--red-primary);">
+                        🆘 نسخة طوارئ فورية
+                    </button>
+                    <button class="btn" onclick="showMigrationGuide()" style="background: var(--accent-dark);">
+                        📋 دليل الترحيل الكامل
+                    </button>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap;">
+                <button class="btn" onclick="showAddStudentForm()">إضافة طالب جديد</button>
+                <button class="btn" onclick="generateReport()">تقرير الاستخدام</button>
+                <button class="btn" onclick="resetAllData()" style="background: var(--red-primary);">مسح جميع البيانات</button>
+            </div>
+            
+            <div id="add-student-form" class="add-student-form" style="display: none;">
+                <h3>إضافة طالب جديد</h3>
+                <div class="form-group">
+                    <label for="student-name">اسم الطالب:</label>
+                    <input type="text" id="student-name" class="form-control" placeholder="أدخل اسم الطالب">
+                </div>
+                <div class="form-group">
+                    <label for="student-grade">الصف الدراسي:</label>
+                    <select id="student-grade" class="form-control">
+                        <option value="first">أول ثانوي</option>
+                        <option value="second">ثاني ثانوي</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn" onclick="addNewStudent()">إضافة الطالب</button>
+                    <button class="btn back-btn" onclick="hideAddStudentForm()">إلغاء</button>
+                </div>
+            </div>
+            
+            <div class="students-list">
+                <h3>قائمة الطلاب المسجلين</h3>
+                <div id="students-container"></div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>نظام الاختبارات الإلكتروني للمرحلة الثانوية - جميع الحقوق محفوظة &copy; 2023</p>
+            <p>برمجة الدكتور أيمن القهوجي - خبير بنوك الأسئلة والقياس 2025</p>
+            <p style="font-size: 0.9em; color: var(--gray-lighter); margin-top: 10px;">
+                إصدار النظام: <span id="footer-version">2.0.0</span> | 
+                آخر تحديث: <span id="footer-update-date">غير معروف</span> |
+                <span style="color: var(--yellow-primary);">🆓 نظام مجاني</span>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // ================================
+        // بيانات النظام
+        // ================================
+        
+        const SYSTEM_VERSION = "2.0.0";
+        const ADMIN_PASSWORD = "aymanrana@unrwa";
+        const CONTACT_LINK = "https://wtsi.me/962775783540";
+        
+        const subjectsData = {
+            first: [
+                { id: 1, name: "تاريخ الأردن", icon: "🏛️", className: "subject-history" },
+                { id: 2, name: "العربية لغتي", icon: "📖", className: "subject-arabic" },
+                { id: 3, name: "اللغة الإنجليزية", icon: "🔤", className: "subject-english" },
+                { id: 4, name: "التربية الإسلامية", icon: "🕌", className: "subject-islamic" }
+            ],
+            second: [
+                { id: 1, name: "الرياضيات المتقدم", icon: "∫", className: "subject-math" },
+                { id: 2, name: "الفيزياء", icon: "⚛️", className: "subject-physics" },
+                { id: 3, name: "الكيمياء", icon: "🧪", className: "subject-chemistry" },
+                { id: 4, name: "العلوم الحياتية", icon: "🔬", className: "subject-biology" },
+                { id: 5, name: "علوم الأرض والبيئة", icon: "🌍", className: "subject-geology" },
+                { id: 6, name: "الرياضيات/الأعمال", icon: "📊", className: "subject-business" },
+                { id: 7, name: "اللغة الإنجليزية", icon: "🔤", className: "subject-english" },
+                { id: 8, name: "التربية الإسلامية", icon: "🕌", className: "subject-islamic" },
+                { id: 9, name: "الجغرافيا", icon: "🗺️", className: "subject-geography" },
+                { id: 10, name: "علم النفس والاجتماع", icon: "🧠", className: "subject-psychology" },
+                { id: 11, name: "كتاب الأدب", icon: "📚", className: "subject-literature" },
+                { id: 12, name: "كتاب النحو والصرف وموسيقا الشعر", icon: "🎵", className: "subject-grammar" },
+                { id: 13, name: "الثقافة المالية", icon: "💸", className: "subject-finance" },
+                { id: 14, name: "التاريخ", icon: "📜", className: "subject-history" },
+                { id: 15, name: "الفلسفة", icon: "🤔", className: "subject-philosophy" }
+            ]
+        };
+        
+        const unitsData = {
+            "first": {
+                "تاريخ الأردن": [
+                    { id: 1, name: "الأردن في العصور القديمة", icon: "🏺", className: "unit-history", hasQuestionBank: true },
+                    { id: 2, name: "الأردن في العصور الإسلامية", icon: "🕌", className: "unit-history", hasQuestionBank: true },
+                    { id: 3, name: "الأردن في العصر الحديث", icon: "🏛️", className: "unit-history", hasQuestionBank: true },
+                    // الوحدات الجديدة - بدون بنوك أسئلة بعد
+                    { id: 4, name: "الحياة الاقتصادية في الأردن", icon: "💰", className: "unit-history", hasQuestionBank: false },
+                    { id: 5, name: "الحياة الاجتماعية في الأردن", icon: "👥", className: "unit-history", hasQuestionBank: false },
+                    { id: 6, name: "التعليم والثقافة في الأردن", icon: "🎓", className: "unit-history", hasQuestionBank: false },
+                    { id: 7, name: "الأردن والقضية الفلسطينية", icon: "🇵🇸", className: "unit-history", hasQuestionBank: false },
+                    { id: 8, name: "أسئلة الوزارة", icon: "🏛️", className: "bank-ministry", hasQuestionBank: true, isMinistry: true }
+                ],
+                "العربية لغتي": [
+                    { id: 1, name: "القيم الإنسانية في القرآن", icon: "📖", className: "unit-literature", hasQuestionBank: true },
+                    { id: 2, name: "في حب الوطن", icon: "❤️", className: "unit-literature", hasQuestionBank: true },
+                    { id: 3, name: "أمراض العصر", icon: "🏥", className: "unit-literature", hasQuestionBank: true },
+                    { id: 4, name: "الإعلام الرقمي", icon: "📱", className: "unit-literature", hasQuestionBank: true },
+                    { id: 5, name: "التعليم التقني بوابة المستقبل", icon: "🔮", className: "unit-literature", hasQuestionBank: true },
+                    // الوحدات الجديدة - بدون بنوك أسئلة بعد
+                    { id: 6, name: "في رحاب القدس", icon: "🕌", className: "unit-literature", hasQuestionBank: false },
+                    { id: 7, name: "من الأدب الأفريقي", icon: "🌍", className: "unit-literature", hasQuestionBank: false },
+                    { id: 8, name: "من القيم الإنسانية في الأدب الحديث", icon: "📚", className: "unit-literature", hasQuestionBank: false },
+                    { id: 9, name: "فن المقامات", icon: "🎨", className: "unit-literature", hasQuestionBank: false },
+                    { id: 10, name: "الذكاء الاصطناعي", icon: "🤖", className: "unit-literature", hasQuestionBank: false },
+                    { id: 11, name: "أسئلة الوزارة", icon: "📖", className: "bank-ministry", hasQuestionBank: true, isMinistry: true }
+                ],
+                "اللغة الإنجليزية": [
+                    { id: 1, name: "Get the message", icon: "💬", className: "unit-english", hasQuestionBank: true },
+                    { id: 2, name: "Looking ahead", icon: "🔭", className: "unit-english", hasQuestionBank: true },
+                    { id: 3, name: "Influences", icon: "👥", className: "unit-english", hasQuestionBank: true },
+                    { id: 4, name: "Inside story", icon: "📖", className: "unit-english", hasQuestionBank: true },
+                    { id: 5, name: "Making sense of the senses", icon: "👁️", className: "unit-english", hasQuestionBank: true },
+                    // الوحدات الجديدة - بدون بنوك أسئلة بعد
+                    { id: 6, name: "Where we live", icon: "🏠", className: "unit-english", hasQuestionBank: false },
+                    { id: 7, name: "Is it fair?", icon: "⚖️", className: "unit-english", hasQuestionBank: false },
+                    { id: 8, name: "Digital perspectives", icon: "💻", className: "unit-english", hasQuestionBank: false },
+                    { id: 9, name: "Highs and lows", icon: "📈", className: "unit-english", hasQuestionBank: false },
+                    { id: 10, name: "Culture vulture", icon: "🎭", className: "unit-english", hasQuestionBank: false },
+                    { id: 11, name: "أسئلة الوزارة", icon: "🔤", className: "bank-ministry", hasQuestionBank: true, isMinistry: true }
+                ],
+                "التربية الإسلامية": [
+                    { id: 1, name: "واعتصموا بحبل الله جميعا", icon: "🕋", className: "unit-islamic", hasQuestionBank: true },
+                    { id: 2, name: "وجعلناكم شعوبا وقبائل لتعارفو", icon: "🤝", className: "unit-islamic", hasQuestionBank: true },
+                    { id: 3, name: "وقل جاء الحق وزهق الباطل", icon: "⚖️", className: "unit-islamic", hasQuestionBank: true },
+                    { id: 4, name: "لتسكنوا إليها", icon: "🏡", className: "unit-islamic", hasQuestionBank: true },
+                    // الوحدات الجديدة - بدون بنوك أسئلة بعد
+                    { id: 5, name: "لا يكلف الله نفسا إلا وسعها", icon: "📿", className: "unit-islamic", hasQuestionBank: false },
+                    { id: 6, name: "وما أرسلناك إلا رحمة للعالمين", icon: "🕋", className: "unit-islamic", hasQuestionBank: false },
+                    { id: 7, name: "وبعهد الله أوفوا", icon: "🤝", className: "unit-islamic", hasQuestionBank: false },
+                    { id: 8, name: "يا أيها الناس اتقوا ربكم الذي خلقكم من نفس واحدة", icon: "🙏", className: "unit-islamic", hasQuestionBank: false },
+                    { id: 9, name: "أسئلة الوزارة", icon: "🕌", className: "bank-ministry", hasQuestionBank: true, isMinistry: true }
+                ]
+            },
+            "second": {
+                "الرياضيات المتقدم": [
+                    { id: 1, name: "الاقترانات والمقادير الجبرية", icon: "𝑓", className: "unit-math", hasQuestionBank: true },
+                    { id: 2, name: "المتطابقات والمعادلات المثلثية", icon: "θ", className: "unit-math", hasQuestionBank: true },
+                    { id: 3, name: "التفاضل وتطبيقاته", icon: "𝑑", className: "unit-math", hasQuestionBank: true },
+                    { id: 4, name: "الأعداد المركبة", icon: "𝑖", className: "unit-math", hasQuestionBank: true },
+                    { id: 5, name: "أسئلة الوزارة", icon: "∫", className: "bank-ministry", hasQuestionBank: true, isMinistry: true }
+                ],
+                "الفيزياء": [
+                    { id: 1, name: "الزخم الخطي والتصادمات", icon: "⚡", className: "unit-physics", hasQuestionBank: true },
+                    { id: 2, name: "الحركة الدورانية", icon: "🔄", className: "unit-physics", hasQuestionBank: true },
+                    { id: 3, name: "الكهرباء السكونية", icon: "⚡", className: "unit-physics", hasQuestionBank: true },
+                    { id: 4, name: "التيار الكهربائي", icon: "🔌", className: "unit-physics", hasQuestionBank: true },
+                    { id: 5, name: "أسئلة الوزارة", icon: "⚛️", className: "bank-ministry", hasQuestionBank: true, isMinistry: true }
+                ],
+                "الكيمياء": [
+                    { id: 1, name: "حالات المادة", icon: "🌡️", className: "unit-chemistry", hasQuestionBank: true },
+                    { id: 2, name: "المحاليل", icon: "🧪", className: "unit-chemistry", hasQuestionBank: true },
+                    { id: 3, name: "الاتزان الكيميائي", icon: "⚖️", className: "unit-chemistry", hasQuestionBank: true },
+                    { id: 4, name: "الحموض والقواعد وتطبيقاتها", icon: "🧬", className: "unit-chemistry", hasQuestionBank: true },
+                    { id: 5, name: "أسئلة الوزارة", icon: "🧪", className: "bank-ministry", hasQuestionBank: true, isMinistry: true }
+                ],
+                "العلوم الحياتية": [
+                    { id: 1, name: "كيمياء الحياة", icon: "🧬", className: "unit-biology", hasQuestionBank: true },
+                    { id: 2, name: "دورة الخلية وتصنيع البروتين", icon: "🔄", className: "unit-biology", hasQuestionBank: true },
+                    { id: 3, name: "الوراثة", icon: "🧬", className: "unit-biology", hasQuestionBank: true },
+                    { id: 4, name: "التكنولوجيا الحيوية", icon: "🔬", className: "unit-biology", hasQuestionBank: true },
+                    { id: 5, name: "أسئلة الوزارة", icon: "🔬", className: "bank-ministry", hasQuestionBank: true, isMinistry: true }
+                ],
+                "علوم الأرض والبيئة": [
+                    { id: 1, name: "الوقود الأحفوري والبيئة", icon: "⛽", className: "unit-geology", hasQuestionBank: true },
+                    { id: 2, name: "التراكيب الجيولوجية", icon: "⛰️", className: "unit-geology", hasQuestionBank: true },
+                    { id: 3, name: "الصفائح التكتونية", icon: "🌋", className: "unit-geology", hasQuestionBank: true },
+                    { id: 4, name: "الاستكشاف الجيولوجي", icon: "🔍", className: "unit-geology", hasQuestionBank: true },
+                    { id: 5, name: "أسئلة الوزارة", icon: "🌍", className: "bank-ministry", hasQuestionBank: true, isMinistry: true }
+                ],
+                "الرياضيات/الأعمال": [
+                    { id: 1, name: "المصفوفات", icon: "📊", className: "unit-business", hasQuestionBank: true },
+                    { id: 2, name: "الخوارزميات ونظرية المخططات", icon: "📈", className: "unit-business", hasQuestionBank: true },
+                    { id: 3, name: "البرمجة الخطية", icon: "💻", className: "unit-business", hasQuestionBank: true },
+                    { id: 4, name: "أسئلة الوزارة", icon: "📊", className: "bank-ministry", hasQuestionBank: true, isMinistry: true }
+                ],
+                "اللغة الإنجليزية": [
+                    { id: 1, name: "Identity", icon: "👤", className: "unit-english", hasQuestionBank: true },
+                    { id: 2, name: "On the move", icon: "🚗", className: "unit-english", hasQuestionBank: true },
+                    { id: 3, name: "Hard sell", icon: "💰", className: "unit-english", hasQuestionBank: true },
+                    { id: 4, name: "Tastes", icon: "🍽️", className: "unit-english", hasQuestionBank: true },
+                    { id: 5, name: "Do your best", icon: "🏆", className: "unit-english", hasQuestionBank: true },
+                    { id: 6, name: "أسئلة الوزارة", icon: "🔤", className: "bank-ministry", hasQuestionBank: true, isMinistry: true }
+                ],
+                "التربية الإسلامية": [
+                    { id: 1, name: "علاقة الإنسان بربه", icon: "🕋", className: "unit-islamic", hasQuestionBank: true },
+                    { id: 2, name: "علاقة الإنسان بنفسه", icon: "🧘", className: "unit-islamic", hasQuestionBank: true },
+                    { id: 3, name: "علاقة الإنسان بمن حوله", icon: "👥", className: "unit-islamic", hasQuestionBank: true },
+                    { id: 4, name: "أسئلة الوزارة", icon: "🕌", className: "bank-ministry", hasQuestionBank: true, isMinistry: true }
+                ],
+                "الجغرافيا": [
+                    { id: 1, name: "أشكال سطح الأرض", icon: "🗻", className: "unit-geography", hasQuestionBank: true },
+                    { id: 2, name: "الجغرافيا السياسية", icon: "🌍", className: "unit-geography", hasQuestionBank: true },
+                    { id: 3, name: "جغرافية السكان", icon: "👨‍👩‍👧‍👦", className: "unit-geography", hasQuestionBank: true },
+                    { id: 4, name: "أسئلة الوزارة", icon: "🗺️", className: "bank-ministry", hasQuestionBank: true, isMinistry: true }
+                ],
+                "علم النفس والاجتماع": [
+                    { id: 1, name: "مدخل إلى علم النفس ودراسة السلوك الفردي", icon: "🧠", className: "unit-psychology", hasQuestionBank: true },
+                    { id: 2, name: "الأسس البيولوجية للسلوك الإنساني", icon: "🔬", className: "unit-psychology", hasQuestionBank: true },
+                    { id: 3, name: "نمو الإنسان: المراحل والخصائص", icon: "📈", className: "unit-psychology", hasQuestionBank: true },
+                    { id: 4, name: "التعلم والذاكرة", icon: "🎓", className: "unit-psychology", hasQuestionBank: true },
+                    { id: 5, name: "أسئلة الوزارة", icon: "🧠", className: "bank-ministry", hasQuestionBank: true, isMinistry: true }
+                ],
+                "كتاب الأدب": [
+                    { id: 1, name: "الأدب في العصر الجاهلي", icon: "🏜️", className: "unit-literature", hasQuestionBank: true },
+                    { id: 2, name: "الأدب في عصر صدر الإسلام والعصر الأموي", icon: "🕌", className: "unit-literature", hasQuestionBank: true },
+                    { id: 3, name: "الأدب في العصر العباسي", icon: "👑", className: "unit-literature", hasQuestionBank: true },
+                    { id: 4, name: "موضوعات خاصة في الأدب العباسي", icon: "📜", className: "unit-literature", hasQuestionBank: true },
+                    { id: 5, name: "الأدب في العصر الأندلسي", icon: "🏰", className: "unit-literature", hasQuestionBank: true },
+                    { id: 6, name: "الأدب في العصرين: الأيوبي والمملوكي", icon: "⚔️", className: "unit-literature", hasQuestionBank: true },
+                    { id: 7, name: "الأدب العربي الحديث", icon: "📚", className: "unit-literature", hasQuestionBank: true },
+                    { id: 8, name: "أسئلة الوزارة", icon: "📚", className: "bank-ministry", hasQuestionBank: true, isMinistry: true }
+                ],
+                "كتاب النحو والصرف وموسيقا الشعر": [
+                    { id: 1, name: "المفعول المطلق", icon: "📝", className: "unit-grammar", hasQuestionBank: true },
+                    { id: 2, name: "الممنوع من الصرف", icon: "🚫", className: "unit-grammar", hasQuestionBank: true },
+                    { id: 3, name: "الاستثناء", icon: "❗", className: "unit-grammar", hasQuestionBank: true },
+                    { id: 4, name: "الجمل التي لها محل من الإعراب", icon: "💬", className: "unit-grammar", hasQuestionBank: true },
+                    { id: 5, name: "التعجب", icon: "😲", className: "unit-grammar", hasQuestionBank: true },
+                    { id: 6, name: "الإضافة", icon: "➕", className: "unit-grammar", hasQuestionBank: true },
+                    { id: 7, name: "موسيقا الشعر", icon: "🎵", className: "unit-grammar", hasQuestionBank: true },
+                    { id: 8, name: "أسئلة الوزارة", icon: "🎵", className: "bank-ministry", hasQuestionBank: true, isMinistry: true }
+                ],
+                "الثقافة المالية": [
+                    { id: 1, name: "الدورة المحاسبية", icon: "📊", className: "unit-finance", hasQuestionBank: true },
+                    { id: 2, name: "القوائم المالية", icon: "📈", className: "unit-finance", hasQuestionBank: true },
+                    { id: 3, name: "التحليل المالي", icon: "🔍", className: "unit-finance", hasQuestionBank: true },
+                    { id: 4, name: "الأسواق المالية", icon: "🏛️", className: "unit-finance", hasQuestionBank: true },
+                    { id: 5, name: "البنك المركزي الأردني", icon: "🏦", className: "unit-finance", hasQuestionBank: true },
+                    { id: 6, name: "أسئلة الوزارة", icon: "💸", className: "bank-ministry", hasQuestionBank: true, isMinistry: true }
+                ],
+                "التاريخ": [
+                    { id: 1, name: "حضارات عالمية", icon: "🌎", className: "unit-history", hasQuestionBank: true },
+                    { id: 2, name: "الحضارة العربية الإسلامية", icon: "🕌", className: "unit-history", hasQuestionBank: true },
+                    { id: 3, name: "الاستعمار الأوروبي للبلاد العربية", icon: "⚓", className: "unit-history", hasQuestionBank: true },
+                    { id: 4, name: "حركات التحرر والاستقلال في الوطن العربي", icon: "✊", className: "unit-history", hasQuestionBank: true },
+                    { id: 5, name: "أسئلة الوزارة", icon: "📜", className: "bank-ministry", hasQuestionBank: true, isMinistry: true }
+                ],
+                "الفلسفة": [
+                    { id: 1, name: "ما هي الفلسفة", icon: "🤔", className: "unit-philosophy", hasQuestionBank: true },
+                    { id: 2, name: "تاريخ الفلسفة", icon: "📜", className: "unit-philosophy", hasQuestionBank: true },
+                    { id: 3, name: "نظرية المعرفة", icon: "🧠", className: "unit-philosophy", hasQuestionBank: true },
+                    { id: 4, name: "المنطق والتفكير الناقد", icon: "💭", className: "unit-philosophy", hasQuestionBank: true },
+                    { id: 5, name: "أسئلة الوزارة", icon: "🤔", className: "bank-ministry", hasQuestionBank: true, isMinistry: true }
+                ]
+            }
+        };
+        
+        const questionBanks = {
+            "first": {
+                "تاريخ الأردن": {
+                    "الأردن في العصور القديمة": [
+                        { name: "بنك الأسئلة - الأردن في العصور القديمة", url: "https://tareek11.netlify.app/", icon: "🏺", className: "bank-history" },
+                        { name: "بنك أسئلة - الأردن في العصور القديمة (جديد)", url: "https://tareeek11.netlify.app/", icon: "🏺", className: "bank-history" }
+                    ],
+                    "الأردن في العصور الإسلامية": [
+                        { name: "بنك الأسئلة - الأردن في العصور الإسلامية", url: "https://tareeek111.netlify.app/", icon: "🕌", className: "bank-history" },
+                        { name: "بنك أسئلة - العصور الإسلامية (جديد 1)", url: "https://tareeeh11.netlify.app/", icon: "🕌", className: "bank-history" },
+                        { name: "بنك أسئلة - العصور الإسلامية (جديد 2)", url: "https://tareeeek11.netlify.app/", icon: "🕌", className: "bank-history" }
+                    ],
+                    "الأردن في العصر الحديث": [
+                        { name: "بنك الأسئلة - الأردن في العصر الحديث", url: "https://taraeek11.netlify.app/", icon: "🏛️", className: "bank-history" },
+                        { name: "بنك أسئلة - العصر الحديث (جديد)", url: "https://tarek11.netlify.app/", icon: "🏛️", className: "bank-history" }
+                    ],
+                    "أسئلة الوزارة": [
+                        { name: "أسئلة الوزارة - تاريخ الأردن", url: "https://qahwaje280-commits.github.io/ministry-history1/", icon: "🏛️", className: "bank-ministry" },
+                        { name: "أسئلة وزارة - تاريخ الأردن (جديد)", url: "https://qahwaje280-commits.github.io/5665656/", icon: "🏛️", className: "bank-ministry" }
+                    ]
+                },
+                "العربية لغتي": {
+                    "القيم الإنسانية في القرآن": [
+                        { name: "بنك أسئلة القيم الإنسانية 1", url: "https://tarek111.netlify.app/", icon: "📖", className: "bank-arabic" },
+                        { name: "بنك أسئلة القيم الإنسانية 2", url: "https://kyam.netlify.app/", icon: "📖", className: "bank-arabic" },
+                        { name: "بنك أسئلة القيم الإنسانية 3", url: "https://arab11.netlify.app/", icon: "📖", className: "bank-arabic" },
+                        { name: "بنك أسئلة القيم الإنسانية 4", url: "https://arrab11.netlify.app/", icon: "📖", className: "bank-arabic" },
+                        { name: "بنك أسئلة القيم الإنسانية 5", url: "https://aaarab11.netlify.app/", icon: "📖", className: "bank-arabic" },
+                        { name: "بنك أسئلة القيم الإنسانية 6", url: "https://araaaabic11.netlify.app/", icon: "📖", className: "bank-arabic" },
+                        { name: "بنك أسئلة القيم الإنسانية 7", url: "https://arrab111.netlify.app/", icon: "📖", className: "bank-arabic" },
+                        { name: "بنك أسئلة القيم الإنسانية 8", url: "https://aaaabic11.netlify.app/", icon: "📖", className: "bank-arabic" },
+                        { name: "بنك أسئلة القيم الإنسانية 9", url: "https://arrabbic11.netlify.app/", icon: "📖", className: "bank-arabic" },
+                        { name: "بنك أسئلة القيم الإنسانية 10", url: "https://aarb11.netlify.app/", icon: "📖", className: "bank-arabic" }
+                    ],
+                    "في حب الوطن": [
+                        { name: "في حب الوطن 1", url: "https://qahwaje280-commits.github.io/bbbbb/", icon: "❤️", className: "bank-arabic" },
+                        { name: "في حب الوطن 2", url: "https://qahwaje280-commits.github.io/vvvv/", icon: "❤️", className: "bank-arabic" },
+                        { name: "في حب الوطن 3", url: "https://qahwaje280-commits.github.io/ssdds/", icon: "❤️", className: "bank-arabic" },
+                        { name: "في حب الوطن 4", url: "https://qahwaje280-commits.github.io/zczc/", icon: "❤️", className: "bank-arabic" },
+                        { name: "في حب الوطن 5", url: "https://qahwaje280-commits.github.io/ch2arab11/", icon: "❤️", className: "bank-arabic" },
+                        { name: "بنك أسئلة في حب الوطن 6", url: "https://qahwaje280-commits.github.io/xgb/", icon: "❤️", className: "bank-arabic" },
+                        { name: "بنك أسئلة في حب الوطن 7", url: "https://qahwaje280-commits.github.io/kjkkj/", icon: "❤️", className: "bank-arabic" },
+                        { name: "بنك أسئلة في حب الوطن 8", url: "https://qahwaje280-commits.github.io/xzxx/", icon: "❤️", className: "bank-arabic" }
+                    ],
+                    "أمراض العصر": [
+                        { name: "امراض العصر 1", url: "https://qahwaje280-commits.github.io/zbgf/", icon: "🏥", className: "bank-arabic" },
+                        { name: "أمراض العصر 2", url: "https://qahwaje280-commits.github.io/ay11/", icon: "🏥", className: "bank-arabic" },
+                        { name: "أمراض العصر 3", url: "https://qahwaje280-commits.github.io/arr/", icon: "🏥", className: "bank-arabic" },
+                        { name: "بنك أسئلة وحدة آلزهايمر (94 سؤالاً)", url: "https://qahwaje280-commits.github.io/ch3-arabic11/", icon: "🏥", className: "bank-arabic" },
+                        { name: "بنك أسئلة أمراض العصر 5", url: "https://qahwaje280-commits.github.io/zxcd/", icon: "🏥", className: "bank-arabic" },
+                        { name: "بنك أسئلة أمراض العصر 6", url: "https://qahwaje280-commits.github.io/jhkjl/", icon: "🏥", className: "bank-arabic" },
+                        { name: "بنك أسئلة أمراض العصر 7", url: "https://qahwaje280-commits.github.io/llol/", icon: "🏥", className: "bank-arabic" }
+                    ],
+                    "الإعلام الرقمي": [
+                        { name: "بنك أسئلة - نحن والإعلام", url: "https://qahwaje280-commits.github.io/ch4-arab11/", icon: "📱", className: "bank-arabic" },
+                        { name: "بنك أسئلة الإعلام الرقمي 2", url: "https://qahwaje280-commits.github.io/ioioio/", icon: "📱", className: "bank-arabic" },
+                        { name: "بنك أسئلة الإعلام الرقمي 3", url: "https://qahwaje280-commits.github.io/ggggggfgg/", icon: "📱", className: "bank-arabic" },
+                        { name: "بنك أسئلة الإعلام الرقمي 4", url: "https://qahwaje280-commits.github.io/mkm/", icon: "📱", className: "bank-arabic" }
+                    ],
+                    "التعليم التقني بوابة المستقبل": [
+                        { name: "بنك أسئلة - التعليم التقني", url: "https://qahwaje280-commits.github.io/ch5arab11/", icon: "🔮", className: "bank-arabic" },
+                        { name: "التعليم التقني 1", url: "https://qahwaje280-commits.github.io/ch52009/", icon: "🔮", className: "bank-arabic" },
+                        { name: "التعليم التقني 2", url: "https://qahwaje280-commits.github.io/ch5arabic2009/", icon: "🔮", className: "bank-arabic" },
+                        { name: "التعليم التقني 3", url: "https://qahwaje280-commits.github.io/ch5555/", icon: "🔮", className: "bank-arabic" },
+                        { name: "بنك أسئلة التعليم التقني 5", url: "https://qahwaje280-commits.github.io/znb/", icon: "🔮", className: "bank-arabic" },
+                        { name: "بنك أسئلة التعليم التقني 6", url: "https://qahwaje280-commits.github.io/yyuuuyu/", icon: "🔮", className: "bank-arabic" },
+                        { name: "بنك أسئلة التعليم التقني 7", url: "https://qahwaje280-commits.github.io/kjkk/", icon: "🔮", className: "bank-arabic" }
+                    ],
+                    "أسئلة الوزارة": [
+                        { name: "أسئلة الوزارة - العربية لغتي", url: "https://qahwaje280-commits.github.io/ministry-arabic1/", icon: "📖", className: "bank-ministry" }
+                    ]
+                },
+                "اللغة الإنجليزية": {
+                    "Get the message": [
+                        { name: "Get the message 1", url: "https://qahwaje280-commits.github.io/ch2eng11/", icon: "💬", className: "bank-english" },
+                        { name: "Get the message 2", url: "https://qahwaje280-commits.github.io/get-/", icon: "💬", className: "bank-english" },
+                        { name: "Get the message 3", url: "https://qahwaje280-commits.github.io/mass/", icon: "💬", className: "bank-english" },
+                        { name: "Get the message 4", url: "https://qahwaje280-commits.github.io/gggthe/", icon: "💬", className: "bank-english" }
+                    ],
+                    "Looking ahead": [
+                        { name: "Looking ahead", url: "https://qahwaje280-commits.github.io/ch2-eng11/", icon: "🔭", className: "bank-english" }
+                    ],
+                    "Influences": [
+                        { name: "Influences", url: "https://qahwaje280-commits.github.io/influences2/", icon: "👥", className: "bank-english" }
+                    ],
+                    "Inside story": [
+                        { name: "Inside story", url: "https://qahwaje280-commits.github.io/-Inside-story-/", icon: "📖", className: "bank-english" }
+                    ],
+                    "أسئلة الوزارة": [
+                        { name: "أسئلة الوزارة - اللغة الإنجليزية", url: "https://qahwaje280-commits.github.io/ministry-english1/", icon: "🔤", className: "bank-ministry" }
+                    ]
+                },
+                "التربية الإسلامية": {
+                    "واعتصموا بحبل الله جميعا": [
+                        { name: "واعتصموا بحبل الله جميعا", url: "https://qahwaje280-commits.github.io/bbb/", icon: "🕋", className: "bank-islamic" }
+                    ],
+                    "وجعلناكم شعوبا وقبائل لتعارفو": [
+                        { name: "وجعلناكم شعوبا وقبائل لتعارفو", url: "https://qahwaje280-commits.github.io/gghghi/", icon: "🤝", className: "bank-islamic" }
+                    ],
+                    "وقل جاء الحق وزهق الباطل": [
+                        { name: "وقل جاء الحق وزهق الباطل", url: "https://qahwaje280-commits.github.io/islamic32009/", icon: "⚖️", className: "bank-islamic" },
+                        { name: "وقل جاء الحق وزهق الباطل 2", url: "https://qahwaje280-commits.github.io/islamic42009/", icon: "⚖️", className: "bank-islamic" }
+                    ],
+                    "لتسكنوا إليها": [
+                        { name: "لتسكنوا إليها", url: "https://qahwaje280-commits.github.io/islam32009/", icon: "🏡", className: "bank-islamic" }
+                    ],
+                    "أسئلة الوزارة": [
+                        { name: "أسئلة الوزارة - التربية الإسلامية", url: "https://qahwaje280-commits.github.io/ministry-islamic1/", icon: "🕌", className: "bank-ministry" }
+                    ]
+                }
+            },
+            "second": {
+                "الرياضيات المتقدم": {
+                    "المتطابقات والمعادلات المثلثية": [
+                        { name: "المتطابقات والمعادلات 1", url: "https://qahwaje280-commits.github.io/mathch2/", icon: "θ", className: "bank-math" },
+                        { name: "المتطابقات والمعادلات 2", url: "https://qahwaje280-commits.github.io/math2222/", icon: "θ", className: "bank-math" },
+                        { name: "المتطابقات والمعادلات 3", url: "https://qahwaje280-commits.github.io/333333/", icon: "θ", className: "bank-math" }
+                    ],
+                    "التفاضل وتطبيقاته": [
+                        { name: "التفاضل وتطبيقاته", url: "https://qahwaje280-commits.github.io/mortabita/", icon: "𝑑", className: "bank-math" },
+                        { name: "التفاضل وتطبيقاته 1", url: "https://qahwaje280-commits.github.io/PPPP/", icon: "𝑑", className: "bank-math" },
+                        { name: "التفاضل وتطبيقاته 2", url: "https://qahwaje280-commits.github.io/hhjhhhjh/", icon: "𝑑", className: "bank-math" },
+                        { name: "بنك أسئلة التفاضل 3", url: "https://qahwaje280-commits.github.io/fdfdfdd/", icon: "𝑑", className: "bank-math" },
+                        { name: "بنك أسئلة التفاضل 4", url: "https://qahwaje280-commits.github.io/qwqwwqwq/", icon: "𝑑", className: "bank-math" },
+                        { name: "بنك أسئلة التفاضل 5", url: "https://qahwaje280-commits.github.io/gggggas/", icon: "𝑑", className: "bank-math" }
+                    ],
+                    "الأعداد المركبة": [
+                        { name: "بنك أسئلة الأعداد المركبة", url: "https://qahwaje280-commits.github.io/compiex/", icon: "𝑖", className: "bank-math" }
+                    ],
+                    "أسئلة الوزارة": [
+                        { name: "أسئلة الوزارة - الرياضيات المتقدم", url: "https://qahwaje280-commits.github.io/ministry-math2/", icon: "∫", className: "bank-ministry" }
+                    ]
+                },
+                "العلوم الحياتية": {
+                    "كيمياء الحياة": [
+                        { name: "كيمياء الحياة", url: "https://qahwaje280-commits.github.io/milogy3/", icon: "🧬", className: "bank-science" },
+                        { name: "كيمياء الحياة", url: "https://qahwaje280-commits.github.io/biloogy/", icon: "🧬", className: "bank-science" },
+                        { name: "كيمياء الحياة 1", url: "https://qahwaje280-commits.github.io/bilo/", icon: "🧬", className: "bank-science" },
+                        { name: "كيمياء الحياة 2", url: "https://qahwaje280-commits.github.io/bbnk2/", icon: "🧬", className: "bank-science" }
+                    ],
+                    "دورة الخلية وتصنيع البروتين": [
+                        { name: "دورة الخلية وتصنيع البروتين", url: "https://qahwaje280-commits.github.io/cell/", icon: "🔄", className: "bank-science" },
+                        { name: "دورة الخلية وتصنيع البروتين", url: "https://qahwaje280-commits.github.io/cell1/", icon: "🔄", className: "bank-science" }
+                    ],
+                    "الوراثة": [
+                        { name: "بنك أسئلة الوراثة 1", url: "https://qahwaje280-commits.github.io/weratha/", icon: "🧬", className: "bank-science" },
+                        { name: "بنك أسئلة الوراثة 2", url: "https://qahwaje280-commits.github.io/88888/", icon: "🧬", className: "bank-science" },
+                        { name: "بنك أسئلة الوراثة 3", url: "https://qahwaje280-commits.github.io/98989/", icon: "🧬", className: "bank-science" },
+                        { name: "بنك أسئلة الوراثة 4", url: "https://qahwaje280-commits.github.io/90808/", icon: "🧬", className: "bank-science" },
+                        { name: "بنك أسئلة الوراثة 5", url: "https://qahwaje280-commits.github.io/7757575/", icon: "🧬", className: "bank-science" },
+                        { name: "بنك أسئلة الوراثة 6", url: "https://qahwaje280-commits.github.io/4535/", icon: "🧬", className: "bank-science" },
+                        { name: "بنك أسئلة الوراثة 7", url: "https://qahwaje280-commits.github.io/9643/", icon: "🧬", className: "bank-science" }
+                    ],
+                    "التكنولوجيا الحيوية": [
+                        { name: "بنك أسئلة التكنولوجيا الحيوية", url: "https://qahwaje280-commits.github.io/bio-technology/", icon: "🔬", className: "bank-science" }
+                    ],
+                    "أسئلة الوزارة": [
+                        { name: "أسئلة الوزارة - العلوم الحياتية", url: "https://qahwaje280-commits.github.io/ministry-biology2/", icon: "🔬", className: "bank-ministry" },
+                        { name: "أسئلة وزارة - الأحياء (جديد)", url: "https://qahwaje280-commits.github.io/455676/", icon: "🔬", className: "bank-ministry" }
+                    ]
+                },
+                "الكيمياء": {
+                    "الاتزان الكيميائي": [
+                        { name: "بنك أسئلة الاتزان الكيميائي", url: "https://qahwaje280-commits.github.io/0765/", icon: "⚖️", className: "bank-science" }
+                    ],
+                    "المحاليل": [
+                        { name: "بنك أسئلة المحاليل 1", url: "https://qahwaje280-commits.github.io/007098/", icon: "🧪", className: "bank-science" },
+                        { name: "بنك أسئلة المحاليل 2", url: "https://qahwaje280-commits.github.io/68878/", icon: "🧪", className: "bank-science" }
+                    ],
+                    "الحموض والقواعد وتطبيقاتها": [
+                        { name: "بنك أسئلة الحموض والقواعد 1", url: "https://qahwaje280-commits.github.io/86547/", icon: "🧬", className: "bank-science" },
+                        { name: "بنك أسئلة الحموض والقواعد 2", url: "https://qahwaje280-commits.github.io/1987/", icon: "🧬", className: "bank-science" },
+                        { name: "بنك أسئلة الحموض والقواعد 3", url: "https://qahwaje280-commits.github.io/9678676/", icon: "🧬", className: "bank-science" },
+                        { name: "بنك أسئلة الحموض والقواعد 4", url: "https://qahwaje280-commits.github.io/80980980/", icon: "🧬", className: "bank-science" },
+                        { name: "بنك أسئلة الحموض والقواعد 5", url: "https://qahwaje280-commits.github.io/90324/", icon: "🧬", className: "bank-science" },
+                        { name: "بنك أسئلة الحموض والقواعد 6", url: "https://qahwaje280-commits.github.io/7697697/", icon: "🧬", className: "bank-science" }
+                    ],
+                    "حالات المادة": [
+                        { name: "بنك أسئلة حالات المادة 1", url: "https://qahwaje280-commits.github.io/657657/", icon: "🌡️", className: "bank-science" },
+                        { name: "بنك أسئلة حالات المادة 2", url: "https://qahwaje280-commits.github.io/7676876/", icon: "🌡️", className: "bank-science" }
+                    ],
+                    "أسئلة الوزارة": [
+                        { name: "أسئلة الوزارة - الكيمياء", url: "https://qahwaje280-commits.github.io/ministry-chemistry2/", icon: "🧪", className: "bank-ministry" }
+                    ]
+                },
+                "الرياضيات/الأعمال": {
+                    "المصفوفات": [
+                        { name: "المصفوفات", url: "https://qahwaje280-commits.github.io/GGGGG/", icon: "📊", className: "bank-business" }
+                    ],
+                    "الخوارزميات ونظرية المخططات": [
+                        { name: "بنك أسئلة الخوارزميات", url: "https://qahwaje280-commits.github.io/alkwarzm/", icon: "📊", className: "bank-business" }
+                    ],
+                    "البرمجة الخطية": [
+                        { name: "البرمجة الخطية", url: "https://qahwaje280-commits.github.io/zzzzzzzz/", icon: "💻", className: "bank-business" }
+                    ],
+                    "أسئلة الوزارة": [
+                        { name: "أسئلة الوزارة - الرياضيات/الأعمال", url: "https://qahwaje280-commits.github.io/ministry-business2/", icon: "📊", className: "bank-ministry" }
+                    ]
+                },
+                "اللغة الإنجليزية": {
+                    "Identity": [
+                        { name: "Identity 1", url: "https://qahwaje280-commits.github.io/GGGGOK/", icon: "👤", className: "bank-english" },
+                        { name: "Identity 2", url: "https://qahwaje280-commits.github.io/MNBNBN/", icon: "👤", className: "bank-english" },
+                        { name: "Identity 3", url: "https://qahwaje280-commits.github.io/IAYMQ/", icon: "👤", className: "bank-english" }
+                    ],
+                    "Hard sell": [
+                        { name: "Hard Sell - بنك المبيعات القوية", url: "https://qahwaje280-commits.github.io/DDF/", icon: "💰", className: "bank-english" },
+                        { name: "Hard Sell - بنك التسويق العدواني", url: "https://qahwaje280-commits.github.io/had-seii/", icon: "💰", className: "bank-english" },
+                        { name: "Hard Sell - بنك العروض الترويجية", url: "https://qahwaje280-commits.github.io/hardsell/", icon: "💰", className: "bank-english" },
+                        { name: "Hard Sell - بنك جديد 1", url: "https://qahwaje280-commits.github.io/6767677/", icon: "💰", className: "bank-english" },
+                        { name: "Hard Sell - بنك جديد 2", url: "https://qahwaje280-commits.github.io/666678/", icon: "💰", className: "bank-english" }
+                    ],
+                    "Tastes": [
+                        { name: "Tastes 1", url: "https://qahwaje280-commits.github.io/eng/", icon: "🍽️", className: "bank-english" },
+                        { name: "Tastes 2", url: "https://qahwaje280-commits.github.io/tastes2/", icon: "🍽️", className: "bank-english" }
+                    ],
+                    "أسئلة الوزارة": [
+                        { name: "أسئلة الوزارة - اللغة الإنجليزية", url: "https://qahwaje280-commits.github.io/ministry-english2/", icon: "🔤", className: "bank-ministry" }
+                    ]
+                },
+                "التربية الإسلامية": {
+                    "علاقة الإنسان بربه": [
+                        { name: "علاقة الإنسان بربه", url: "https://qahwaje280-commits.github.io/abushaweesh/", icon: "🕋", className: "bank-islamic" }
+                    ],
+                    "أسئلة الوزارة": [
+                        { name: "أسئلة الوزارة - التربية الإسلامية", url: "https://qahwaje280-commits.github.io/ministry-islamic2/", icon: "🕌", className: "bank-ministry" }
+                    ]
+                },
+                "كتاب الأدب": {
+                    "الأدب في العصر الجاهلي": [
+                        { name: "الأدب في العصر الجاهلي - رابط مضاف", url: "https://qahwaje280-commits.github.io/xzxc/", icon: "🏜️", className: "bank-literature" },
+                        { name: "الشعر الجاهلي 1", url: "https://qahwaje280-commits.github.io/kjkj/", icon: "🏜️", className: "bank-literature" },
+                        { name: "الشعر الجاهلي 2", url: "https://qahwaje280-commits.github.io/bbbo/", icon: "🏜️", className: "bank-literature" },
+                        { name: "الشعر الجاهلي 3", url: "https://qahwaje280-commits.github.io/sdd/", icon: "🏜️", className: "bank-literature" },
+                        { name: "الشعر الجاهلي 5", url: "https://qahwaje280-commits.github.io/jahili/", icon: "🏜️", className: "bank-literature" }
+                    ],
+                    "الأدب في عصر صدر الإسلام والعصر الأموي": [
+                        { name: "الأدب في عصر صدر الإسلام", url: "https://qahwaje280-commits.github.io/zxzxas/", icon: "🕌", className: "bank-literature" },
+                        { name: "أدب صدر الإسلام 1", url: "https://qahwaje280-commits.github.io/jkk/", icon: "🕌", className: "bank-literature" },
+                        { name: "أدب صدر الإسلام 2", url: "https://qahwaje280-commits.github.io/hghgh/", icon: "🕌", className: "bank-literature" },
+                        { name: "أدب صدر الإسلام 3", url: "https://qahwaje280-commits.github.io/hghh/", icon: "🕌", className: "bank-literature" },
+                        { name: "أدب صدر الإسلام 4", url: "https://qahwaje280-commits.github.io/popo/", icon: "🕌", className: "bank-literature" },
+                        { name: "أدب صدر الإسلام 5", url: "https://qahwaje280-commits.github.io/fdfdf/", icon: "🕌", className: "bank-literature" },
+                        { name: "أدب صدر الإسلام 6", url: "https://qahwaje280-commits.github.io/fffdf/", icon: "🕌", className: "bank-literature" }
+                    ],
+                    "الأدب في العصر العباسي": [
+                        { name: "الأدب في العصر العباسي", url: "https://qahwaje280-commits.github.io/hghg/", icon: "👑", className: "bank-literature" }
+                    ],
+                    "أسئلة الوزارة": [
+                        { name: "أسئلة الوزارة - كتاب الأدب", url: "https://qahwaje280-commits.github.io/ministry-literature2/", icon: "📚", className: "bank-ministry" }
+                    ]
+                },
+                "الجغرافيا": {
+                    "أشكال سطح الأرض": [
+                        { name: "أشكال سطح الأرض 1", url: "https://qahwaje280-commits.github.io/earth/", icon: "🗻", className: "bank-geography" }
+                    ],
+                    "أسئلة الوزارة": [
+                        { name: "أسئلة الوزارة - الجغرافيا", url: "https://qahwaje280-commits.github.io/ministry-geography2/", icon: "🗺️", className: "bank-ministry" }
+                    ]
+                },
+                "الفيزياء": {
+                    "أسئلة الوزارة": [
+                        { name: "أسئلة الوزارة - الفيزياء", url: "https://qahwaje280-commits.github.io/ministry-physics2/", icon: "⚛️", className: "bank-ministry" }
+                    ]
+                },
+                "علوم الأرض والبيئة": {
+                    "أسئلة الوزارة": [
+                        { name: "أسئلة الوزارة - علوم الأرض", url: "https://qahwaje280-commits.github.io/ministry-geology2/", icon: "🌍", className: "bank-ministry" }
+                    ]
+                },
+                "علم النفس والاجتماع": {
+                    "أسئلة الوزارة": [
+                        { name: "أسئلة الوزارة - علم النفس", url: "https://qahwaje280-commits.github.io/ministry-psychology2/", icon: "🧠", className: "bank-ministry" }
+                    ]
+                },
+                "كتاب النحو والصرف وموسيقا الشعر": {
+                    "أسئلة الوزارة": [
+                        { name: "أسئلة الوزارة - النحو والصرف", url: "https://qahwaje280-commits.github.io/ministry-grammar2/", icon: "🎵", className: "bank-ministry" }
+                    ]
+                },
+                "الثقافة المالية": {
+                    "الدورة المحاسبية": [
+                        { name: "الدورة المحاسبية - رابط مضاف", url: "https://qahwaje280-commits.github.io/5444545455/", icon: "📊", className: "bank-finance" }
+                    ],
+                    "أسئلة الوزارة": [
+                        { name: "أسئلة الوزارة - الثقافة المالية", url: "https://qahwaje280-commits.github.io/ministry-finance2/", icon: "💸", className: "bank-ministry" }
+                    ]
+                },
+                "التاريخ": {
+                    "أسئلة الوزارة": [
+                        { name: "أسئلة الوزارة - التاريخ", url: "https://qahwaje280-commits.github.io/ministry-history2/", icon: "📜", className: "bank-ministry" }
+                    ]
+                },
+                "الفلسفة": {
+                    "أسئلة الوزارة": [
+                        { name: "أسئلة الوزارة - الفلسفة", url: "https://qahwaje280-commits.github.io/ministry-philosophy2/", icon: "🤔", className: "bank-ministry" }
+                    ]
+                }
+            }
+        };
+        
+        const activationCodes = [
+            { code: "A3B7C9D2", status: "available", disabled: false },
+            { code: "E5F1G8H4", status: "available", disabled: false },
+            { code: "I6J2K7L3", status: "available", disabled: false },
+            { code: "M9N4O1P5", status: "available", disabled: false },
+            { code: "Q8R6S2T7", status: "available", disabled: false },
+            { code: "U3V9W1X4", status: "available", disabled: false },
+            { code: "Y5Z2A6B8", status: "available", disabled: false },
+            { code: "C7D1E9F3", status: "available", disabled: false },
+            { code: "G4H5I2J6", status: "available", disabled: false },
+            { code: "K8L3M7N1", status: "available", disabled: false },
+            { code: "O9P4Q2R5", status: "available", disabled: false },
+            { code: "S6T1U8V3", status: "available", disabled: false },
+            { code: "W7X2Y9Z4", status: "available", disabled: false },
+            { code: "A1B5C3D8", status: "available", disabled: false },
+            { code: "E6F2G7H9", status: "available", disabled: false },
+            { code: "I4J8K1L5", status: "available", disabled: false },
+            { code: "M3N6O9P2", status: "available", disabled: false },
+            { code: "Q7R1S4T8", status: "available", disabled: false },
+            { code: "U5V3W6X9", status: "available", disabled: false },
+            { code: "Y2Z7A4B1", status: "available", disabled: false }
+        ];
+        
+        // ================================
+        // المتغيرات العامة
+        // ================================
+        
+        let students = JSON.parse(localStorage.getItem('students')) || [];
+        let disabledCodes = JSON.parse(localStorage.getItem('disabledCodes')) || [];
+        let currentStudent = JSON.parse(localStorage.getItem('currentStudent')) || null;
+        let currentGrade = '';
+        let currentSubject = '';
+        let currentUnit = '';
+        
+        // ================================
+        // تأثيرات الأوراق المتساقطة
+        // ================================
+        
+        function createFallingPapers() {
+            const container = document.getElementById('falling-papers');
+            const colors = ['yellow', 'white', 'red'];
+            const symbols = ['📄', '📃', '📜', '📑', '📝'];
+            
+            for (let i = 0; i < 20; i++) {
+                const paper = document.createElement('div');
+                paper.className = `paper ${colors[Math.floor(Math.random() * colors.length)]}`;
+                paper.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                paper.style.left = `${Math.random() * 100}%`;
+                paper.style.animationDuration = `${Math.random() * 10 + 10}s`;
+                paper.style.animationDelay = `${Math.random() * 5}s`;
+                paper.style.opacity = Math.random() * 0.5 + 0.3;
+                container.appendChild(paper);
+            }
+        }
+        
+        // ================================
+        // وظائف التنقل بين الصفحات
+        // ================================
+        
+        function goToHomePage() {
+            document.getElementById('home-page').classList.remove('hidden');
+            document.getElementById('subjects-page').classList.add('hidden');
+            document.getElementById('units-page').classList.add('hidden');
+            document.getElementById('question-bank-page').classList.add('hidden');
+        }
+        
+        function selectGrade(grade) {
+            currentGrade = grade;
+            showSubjectsPage();
+        }
+        
+        function showSubjectsPage() {
+            document.getElementById('home-page').classList.add('hidden');
+            document.getElementById('subjects-page').classList.remove('hidden');
+            document.getElementById('units-page').classList.add('hidden');
+            document.getElementById('question-bank-page').classList.add('hidden');
+            
+            const subjectsContainer = document.getElementById('subjects-container');
+            const subjectsTitle = document.getElementById('subjects-title');
+            const subjectsSubtitle = document.getElementById('subjects-subtitle');
+            
+            if (currentGrade === 'first') {
+                subjectsTitle.textContent = 'أول ثانوي - اختر المادة';
+                subjectsSubtitle.textContent = 'اختر المادة التي تريد أداء الاختبار فيها';
+            } else {
+                subjectsTitle.textContent = 'ثاني ثانوي - اختر المادة';
+                subjectsSubtitle.textContent = 'اختر المادة التي تريد أداء الاختبار فيها';
+            }
+            
+            subjectsContainer.innerHTML = '';
+            const subjects = subjectsData[currentGrade];
+            
+            subjects.forEach(subject => {
+                const subjectCircle = document.createElement('div');
+                subjectCircle.className = `subject-circle ${subject.className}`;
+                subjectCircle.onclick = () => selectSubject(subject.name);
+                
+                subjectCircle.innerHTML = `
+                    <div class="subject-icon">${subject.icon}</div>
+                    <div class="subject-title">${subject.name}</div>
+                `;
+                
+                subjectsContainer.appendChild(subjectCircle);
+            });
+        }
+        
+        function selectSubject(subjectName) {
+            currentSubject = subjectName;
+            showUnitsPage();
+        }
+        
+        function showUnitsPage() {
+            document.getElementById('home-page').classList.add('hidden');
+            document.getElementById('subjects-page').classList.add('hidden');
+            document.getElementById('units-page').classList.remove('hidden');
+            document.getElementById('question-bank-page').classList.add('hidden');
+            
+            const unitsList = document.getElementById('units-list');
+            const unitsTitle = document.getElementById('units-title');
+            const unitsSubtitle = document.getElementById('units-subtitle');
+            
+            unitsTitle.textContent = currentSubject;
+            unitsSubtitle.textContent = 'اختر الوحدة التي تريد دراستها';
+            
+            unitsList.innerHTML = '';
+            const units = unitsData[currentGrade]?.[currentSubject] || [];
+            
+            units.forEach(unit => {
+                const unitCircle = document.createElement('div');
+                
+                if (unit.isMinistry) {
+                    unitCircle.className = `unit-circle bank-ministry`;
+                } else {
+                    unitCircle.className = `unit-circle ${unit.className}`;
+                }
+                
+                unitCircle.innerHTML = `
+                    ${unit.isMinistry ? '<div class="ministry-badge">وزارة</div>' : ''}
+                    <div class="unit-icon">${unit.icon}</div>
+                    <div class="unit-title">${unit.name}</div>
+                `;
+                
+                // تعديل هنا: التحقق مما إذا كان للوحدة بنك أسئلة
+                if (unit.hasQuestionBank) {
+                    unitCircle.onclick = () => showQuestionBank(unit.name);
+                } else {
+                    // للوحدات الجديدة التي لا تحتوي على بنوك أسئلة
+                    unitCircle.onclick = () => {
+                        alert(`⚠️ بنك أسئلة "${unit.name}" في طور التحديث\nسيتم إضافته قريباً بإذن الله`);
+                    };
+                }
+                
+                unitsList.appendChild(unitCircle);
+            });
+        }
+        
+        function showQuestionBank(unitName) {
+            currentUnit = unitName;
+            
+            document.getElementById('home-page').classList.add('hidden');
+            document.getElementById('subjects-page').classList.add('hidden');
+            document.getElementById('units-page').classList.add('hidden');
+            document.getElementById('question-bank-page').classList.remove('hidden');
+            
+            const questionBankTitle = document.getElementById('question-bank-title');
+            const questionBankSubtitle = document.getElementById('question-bank-subtitle');
+            const questionBankUnit = document.getElementById('question-bank-unit');
+            const questionBankLinks = document.getElementById('question-bank-links');
+            
+            questionBankTitle.textContent = `بنك أسئلة ${currentSubject}`;
+            questionBankSubtitle.textContent = `${currentSubject} - ${currentGrade === 'first' ? 'الصف الأول الثانوي' : 'الصف الثاني الثانوي'}`;
+            questionBankUnit.textContent = `بنك الأسئلة لوحدة ${unitName}`;
+            
+            questionBankLinks.innerHTML = '';
+            
+            const banks = questionBanks[currentGrade]?.[currentSubject]?.[unitName] || [];
+            
+            if (banks.length > 0) {
+                banks.forEach(bank => {
+                    const bankCircle = document.createElement('div');
+                    
+                    if (bank.className === "bank-ministry") {
+                        bankCircle.className = `question-bank-circle bank-ministry`;
+                    } else {
+                        bankCircle.className = `question-bank-circle ${bank.className}`;
+                    }
+                    
+                    bankCircle.setAttribute('onclick', `window.open('${bank.url}', '_blank')`);
+                    
+                    bankCircle.innerHTML = `
+                        ${bank.className === "bank-ministry" ? '<div class="ministry-badge">وزارة</div>' : ''}
+                        <div class="bank-icon">${bank.icon}</div>
+                        <div class="bank-title">${bank.name}</div>
+                    `;
+                    questionBankLinks.appendChild(bankCircle);
+                });
+            } else {
+                questionBankLinks.innerHTML = '<p style="text-align: center; color: var(--gray-lighter);">⚠️ بنك أسئلة هذه الوحدة في طور التحديث، سيتم إضافته قريباً بإذن الله.</p>';
+            }
+        }
+        
+        function goToSubjectsPage() {
+            showSubjectsPage();
+        }
+        
+        function goToUnitsPage() {
+            showUnitsPage();
+        }
+        
+        // ================================
+        // وظائف لوحة تحكم المسؤول
+        // ================================
+        
+        function showAdminLogin() {
+            document.getElementById('admin-login-modal').style.display = 'block';
+        }
+        
+        function closeAdminLogin() {
+            document.getElementById('admin-login-modal').style.display = 'none';
+            document.getElementById('admin-password').value = '';
+            document.getElementById('admin-login-error').style.display = 'none';
+        }
+        
+        function checkAdminPassword() {
+            const password = document.getElementById('admin-password').value;
+            const errorElement = document.getElementById('admin-login-error');
+            
+            if (password === ADMIN_PASSWORD) {
+                closeAdminLogin();
+                showAdminPanel();
+            } else {
+                errorElement.style.display = 'block';
+            }
+        }
+        
+        function showAdminPanel() {
+            document.getElementById('admin-modal').style.display = 'block';
+            updateAdminStats();
+            showCodes();
+            showStudentsList();
+        }
+        
+        function closeAdminPanel() {
+            document.getElementById('admin-modal').style.display = 'none';
+        }
+        
+        function updateAdminStats() {
+            const totalStudents = students.length;
+            const firstGradeStudents = students.filter(s => s.grade === 'first').length;
+            const secondGradeStudents = students.filter(s => s.grade === 'second').length;
+            
+            document.getElementById('total-students').textContent = totalStudents;
+            document.getElementById('active-students').textContent = totalStudents;
+            document.getElementById('first-grade-students').textContent = firstGradeStudents;
+            document.getElementById('second-grade-students').textContent = secondGradeStudents;
+        }
+        
+        function showCodes() {
+            const codesList = document.getElementById('codes-list');
+            codesList.innerHTML = '';
+            
+            activationCodes.forEach(codeObj => {
+                const codeItem = document.createElement('div');
+                
+                if (codeObj.disabled) {
+                    codeItem.className = 'code-item disabled';
+                    codeItem.textContent = codeObj.code;
+                    codeItem.title = "كود معطل";
+                } else if (codeObj.status === "used") {
+                    codeItem.className = 'code-item used';
+                    codeItem.textContent = codeObj.code;
+                    codeItem.title = "كود مستخدم";
+                } else {
+                    codeItem.className = 'code-item available';
+                    codeItem.textContent = codeObj.code;
+                    codeItem.title = "كود متاح";
+                }
+                
+                codeItem.onclick = () => copyCode(codeObj.code);
+                codesList.appendChild(codeItem);
+            });
+        }
+        
+        function filterCodes(filterType) {
+            const codesList = document.getElementById('codes-list');
+            codesList.innerHTML = '';
+            
+            activationCodes.forEach(codeObj => {
+                let show = false;
+                
+                switch(filterType) {
+                    case 'all':
+                        show = true;
+                        break;
+                    case 'available':
+                        show = codeObj.status === "available" && !codeObj.disabled;
+                        break;
+                    case 'used':
+                        show = codeObj.status === "used";
+                        break;
+                    case 'disabled':
+                        show = codeObj.disabled;
+                        break;
+                }
+                
+                if (show) {
+                    const codeItem = document.createElement('div');
+                    
+                    if (codeObj.disabled) {
+                        codeItem.className = 'code-item disabled';
+                        codeItem.textContent = codeObj.code;
+                        codeItem.title = "كود معطل";
+                    } else if (codeObj.status === "used") {
+                        codeItem.className = 'code-item used';
+                        codeItem.textContent = codeObj.code;
+                        codeItem.title = "كود مستخدم";
+                    } else {
+                        codeItem.className = 'code-item available';
+                        codeItem.textContent = codeObj.code;
+                        codeItem.title = "كود متاح";
+                    }
+                    
+                    codeItem.onclick = () => copyCode(codeObj.code);
+                    codesList.appendChild(codeItem);
+                }
+            });
+        }
+        
+        function copyCode(code) {
+            navigator.clipboard.writeText(code).then(() => {
+                alert(`✅ تم نسخ الكود: ${code}`);
+            });
+        }
+        
+        function copyAllCodes() {
+            const allCodes = activationCodes.map(c => c.code).join('\n');
+            navigator.clipboard.writeText(allCodes).then(() => {
+                alert('✅ تم نسخ جميع الأكواد');
+            });
+        }
+        
+        function exportCodesToFile() {
+            const allCodes = activationCodes.map(c => `${c.code} - ${c.disabled ? 'معطل' : c.status === 'used' ? 'مستخدم' : 'متاح'}`).join('\n');
+            const blob = new Blob([allCodes], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'activation_codes.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        function showStudentsList() {
+            const studentsContainer = document.getElementById('students-container');
+            studentsContainer.innerHTML = '';
+            
+            students.forEach(student => {
+                const studentItem = document.createElement('div');
+                studentItem.className = 'student-item';
+                studentItem.innerHTML = `
+                    <div class="student-info">
+                        <strong>${student.name}</strong><br>
+                        <small>الكود: ${student.code} | الصف: ${student.grade === 'first' ? 'أول ثانوي' : 'ثاني ثانوي'}</small><br>
+                        <small>${student.isFreeAccess ? '🆓 حساب مجاني' : '💳 حساب مدفوع'}</small>
+                    </div>
+                    <div class="student-actions">
+                        <button class="btn" onclick="deleteStudent('${student.id}')" style="background: var(--red-primary); padding: 5px 10px; font-size: 0.9rem;">حذف</button>
+                    </div>
+                `;
+                studentsContainer.appendChild(studentItem);
+            });
+        }
+        
+        function showAddStudentForm() {
+            document.getElementById('add-student-form').style.display = 'block';
+        }
+        
+        function hideAddStudentForm() {
+            document.getElementById('add-student-form').style.display = 'none';
+        }
+        
+        function addNewStudent() {
+            const name = document.getElementById('student-name').value;
+            const grade = document.getElementById('student-grade').value;
+            
+            if (!name) {
+                alert('يرجى إدخال اسم الطالب');
+                return;
+            }
+            
+            const newStudent = {
+                id: Date.now(),
+                code: 'MANUAL-' + Math.random().toString(36).substr(2, 6).toUpperCase(),
+                grade: grade,
+                activationDate: new Date().toISOString(),
+                name: name,
+                isFreeAccess: true
+            };
+            
+            students.push(newStudent);
+            
+            localStorage.setItem('students', JSON.stringify(students));
+            
+            updateAdminStats();
+            showStudentsList();
+            hideAddStudentForm();
+            
+            document.getElementById('student-name').value = '';
+            alert(`✅ تم إضافة الطالب ${name} بنجاح`);
+        }
+        
+        function deleteStudent(id) {
+            if (confirm('هل تريد حذف هذا الطالب؟')) {
+                const student = students.find(s => s.id === id);
+                if (student) {
+                    students = students.filter(s => s.id !== id);
+                    
+                    localStorage.setItem('students', JSON.stringify(students));
+                    
+                    updateAdminStats();
+                    showStudentsList();
+                    
+                    alert('✅ تم حذف الطالب');
+                }
+            }
+        }
+        
+        function directAccessToGrade(grade) {
+            currentGrade = grade;
+            showSubjectsPage();
+            closeAdminPanel();
+        }
+        
+        function generateReport() {
+            const freeStudents = students.filter(s => s.isFreeAccess).length;
+            
+            const report = `
+                تقرير استخدام النظام - ${new Date().toLocaleDateString('ar-EG')}
+                ============================================
+                إجمالي الطلاب: ${students.length}
+                الطلاب المجانيين: ${freeStudents}
+                طلاب أول ثانوي: ${students.filter(s => s.grade === 'first').length}
+                طلاب ثاني ثانوي: ${students.filter(s => s.grade === 'second').length}
+                الأكواد المستخدمة: ${activationCodes.filter(c => c.status === "used").length}
+                الأكواد المتاحة: ${activationCodes.filter(c => c.status === "available" && !c.disabled).length}
+                الأكواد المعطلة: ${activationCodes.filter(c => c.disabled).length}
+                
+                حالة النظام: 🆓 مجاني للجميع
+            `;
+            
+            alert(report);
+        }
+        
+        function resetAllData() {
+            if (confirm('⚠️ تحذير: هذا سيحذف جميع بيانات النظام! هل تريد المتابعة؟')) {
+                localStorage.clear();
+                students = [];
+                disabledCodes = [];
+                currentStudent = null;
+                
+                // إعادة تعيين جميع الأكواد
+                activationCodes.forEach(code => {
+                    code.status = "available";
+                    code.disabled = false;
+                });
+                
+                updateAdminStats();
+                showStudentsList();
+                showCodes();
+                
+                alert('✅ تم مسح جميع بيانات النظام');
+            }
+        }
+        
+        function exportBackup() {
+            const backupData = {
+                students: students,
+                disabledCodes: disabledCodes,
+                timestamp: new Date().toISOString(),
+                version: SYSTEM_VERSION
+            };
+            
+            const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `system_backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('✅ تم تصدير النسخة الاحتياطية بنجاح');
+        }
+        
+        function importBackup() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    try {
+                        const backupData = JSON.parse(event.target.result);
+                        
+                        if (confirm('هل تريد استيراد النسخة الاحتياطية؟ سيتم استبدال البيانات الحالية.')) {
+                            localStorage.setItem('students', JSON.stringify(backupData.students || []));
+                            localStorage.setItem('disabledCodes', JSON.stringify(backupData.disabledCodes || []));
+                            
+                            students = backupData.students || [];
+                            disabledCodes = backupData.disabledCodes || [];
+                            
+                            updateAdminStats();
+                            showStudentsList();
+                            showCodes();
+                            
+                            alert('✅ تم استيراد النسخة الاحتياطية بنجاح');
+                        }
+                    } catch (error) {
+                        alert('❌ ملف النسخة الاحتياطية غير صالح');
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+        
+        function createEmergencyBackup() {
+            exportBackup();
+            alert('🚨 تم إنشاء نسخة طوارئ فورية');
+        }
+        
+        function showMigrationGuide() {
+            const guide = `
+                دليل ترحيل النظام
+                ===================
+                
+                1. قم بتصدير النسخة الاحتياطية من النظام الحالي
+                2. انسخ جميع ملفات النظام إلى الموقع الجديد
+                3. قم باستيراد النسخة الاحتياطية في النظام الجديد
+                4. تأكد من عمل الروابط بشكل صحيح
+                5. اختبر النظام قبل إتاحته للطلاب
+                
+                ⚠️ ملاحظات هامة:
+                - احتفظ بنسخ احتياطية متعددة
+                - اختبر جميع الوظائف بعد الترحيل
+                - النظام يعمل مجاناً الآن
+            `;
+            
+            alert(guide);
+        }
+        
+        function checkSystemHealth() {
+            const statusElement = document.getElementById('system-status');
+            let statusHTML = '<div style="text-align: left; margin-top: 10px;">';
+            
+            statusHTML += '<p style="color: var(--yellow-primary);">✅ دعم LocalStorage نشط</p>';
+            statusHTML += `<p style="color: var(--yellow-primary);">✅ تم العثور على ${students.length} طالب</p>`;
+            
+            const availableCodes = activationCodes.filter(code => code.status === "available" && !code.disabled).length;
+            const usedCodesCount = activationCodes.filter(code => code.status === "used").length;
+            const disabledCodesCount = activationCodes.filter(code => code.disabled).length;
+            
+            statusHTML += `<p style="color: var(--yellow-primary);">✅ ${availableCodes} كود متاح</p>`;
+            statusHTML += `<p style="color: var(--yellow-primary);">✅ ${usedCodesCount} كود مستخدم</p>`;
+            statusHTML += `<p style="color: ${disabledCodesCount > 0 ? 'var(--yellow-primary)' : 'var(--yellow-primary)'};">✅ ${disabledCodesCount} كود معطل</p>`;
+            statusHTML += `<p style="color: var(--yellow-primary); font-weight: bold;">🆓 النظام يعمل مجاناً للجميع</p>`;
+            
+            statusHTML += '</div>';
+            statusElement.innerHTML = statusHTML;
+        }
+        
+        function clearSystemLogs() {
+            alert("✅ لا توجد سجلات لحذفها في النسخة المبسطة");
+        }
+        
+        // ================================
+        // تهيئة النظام
+        // ================================
+        
+        window.onload = function() {
+            createFallingPapers();
+            
+            document.getElementById('footer-version').textContent = SYSTEM_VERSION;
+            document.getElementById('footer-update-date').textContent = new Date().toLocaleDateString('ar-EG');
+            
+            console.log("🚀 نظام الاختبارات الإلكتروني - النسخة المحسنة جاهزة!");
+            
+            if (!currentStudent) {
+                currentStudent = {
+                    id: Date.now(),
+                    code: 'FREE-ACCESS-' + Math.random().toString(36).substr(2, 6).toUpperCase(),
+                    grade: 'first',
+                    activationDate: new Date().toISOString(),
+                    name: 'طالب النظام المجاني',
+                    isFreeAccess: true
+                };
+                
+                students.push(currentStudent);
+                localStorage.setItem('students', JSON.stringify(students));
+                localStorage.setItem('currentStudent', JSON.stringify(currentStudent));
+            }
+        };
+    </script>
+</body>
+</html>
